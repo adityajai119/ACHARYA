@@ -20,7 +20,7 @@ from uuid import uuid4
 import shutil
 from pdfminer.high_level import extract_text
 import json
-import urllib.parse
+from pathlib import Path
 
 # ---------- CONFIGURATION ----------
 
@@ -292,6 +292,7 @@ class AssignedCompanyTest(BaseModel):
 
 # ---------- JWT/OAUTH ----------
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login")
+optional_oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/login", auto_error=False)
 
 async def get_current_user(token: str = Depends(oauth2_scheme)):
     credentials_exception = HTTPException(
@@ -609,10 +610,14 @@ async def health_check():
         return {"status": "unhealthy", "database": "disconnected", "error": str(e)}
 
 @app.post("/api/register")
-async def register(user: UserIn):
+async def register(user: UserIn, token: Optional[str] = Depends(optional_oauth2_scheme)):
     try:
         if user.role not in ['Admin', 'Recruiter', 'Candidate']:
             raise HTTPException(status_code=400, detail="Invalid role")
+        
+        # Public sign-up is for Candidate and Recruiter; Admin accounts need an existing admin's token
+        if user.role == 'Admin' and (not token or (await get_current_user(token))['role'] != 'Admin'):
+            raise HTTPException(status_code=403, detail="Admin accounts can only be created by an admin")
         
         # Check if username already exists
         existing = await db.users.find_one({"username": user.username})
@@ -1621,27 +1626,34 @@ async def recruiter_get_company_test_results(candidate: str, user=Depends(recrui
         raise HTTPException(status_code=500, detail="Failed to fetch company test results")
 
 @app.get("/download/{file_path:path}")
-async def download_file(file_path: str):
+async def download_file(file_path: str, user=Depends(get_current_user)):
     try:
-        # Decode the file path
-        decoded_path = urllib.parse.unquote(file_path)
+        # Only uploads/<name>: no "..", absolute paths, backslashes or NUL bytes
+        if ".." in file_path.split("/") or "\\" in file_path or "\x00" in file_path or file_path.startswith("/") or os.path.isabs(file_path):
+            raise HTTPException(status_code=400, detail="Invalid file path")
+        uploads_dir = Path(UPLOAD_DIR).resolve()
+        target = Path(file_path).resolve()
+        if not target.is_relative_to(uploads_dir):
+            raise HTTPException(status_code=403, detail="Access denied")
         
-        # Security check - ensure the file is in the uploads directory
-        if not decoded_path.startswith(UPLOAD_DIR):
+        # Uploads are application resumes: the candidate who uploaded one, recruiters and admins may download it
+        application = await db.applications.find_one({"resume_path": os.path.join(UPLOAD_DIR, *target.relative_to(uploads_dir).parts)})
+        if not application:
+            raise HTTPException(status_code=404, detail="File not found")
+        if user['role'] not in ('Recruiter', 'Admin') and application.get('candidate') != user['username']:
             raise HTTPException(status_code=403, detail="Access denied")
         
         # Check if file exists
-        if not os.path.exists(decoded_path):
+        if not target.is_file():
             raise HTTPException(status_code=404, detail="File not found")
         
-        # Get file name for download
-        filename = os.path.basename(decoded_path)
-        
         return FileResponse(
-            path=decoded_path,
-            filename=filename,
+            path=target,
+            filename=target.name,
             media_type='application/octet-stream'
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error downloading file: {e}")
         raise HTTPException(status_code=500, detail="Failed to download file")

@@ -169,6 +169,8 @@ DEMO_CANDIDATE_PASSWORD=
 ```
 Keep `SEED_DEMO_USERS` off in production.
 
+Public registration offers Candidate and Recruiter only. To add another admin, call `POST /api/register` with `"role": "Admin"` and an existing admin's `Authorization: Bearer <token>` header.
+
 ### How to Get These Values
 
 #### 1. MongoDB URL
