@@ -33,7 +33,7 @@ def create_env_file():
         env_content = f"""# MongoDB Configuration
 MONGODB_URL=mongodb://localhost:27017/acharya
 
-# JWT Configuration (random value generated for this machine)
+# JWT Configuration
 JWT_SECRET_KEY={secrets.token_hex(32)}
 
 # Server Configuration

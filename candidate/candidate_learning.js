@@ -136,14 +136,13 @@ function saveChatSessions() {
 
 // ---------------- AI Teacher Logic ----------------
 // For production, use a backend endpoint. Do NOT expose this key in the frontend.
-const API_KEY = (window.ACHARYA_CONFIG && window.ACHARYA_CONFIG.GEMINI_API_KEY) || ''; // Gemini API key supplied at runtime; never commit it
+const API_KEY = (window.ACHARYA_CONFIG && window.ACHARYA_CONFIG.GEMINI_API_KEY) || '';
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
 const aiForm = document.getElementById('aiQueryForm');
 const aiResponseContainer = document.getElementById('aiResponseContainer');
 const loader = document.getElementById('loader');
 
-// Model output is untrusted: show raw HTML in it as text and keep only safe link targets
 window.marked?.use({
     renderer: { html(token) { return escapeHTML(typeof token === 'string' ? token : token.text); } },
     walkTokens(token) { if (token.type === 'link' || token.type === 'image') token.href = safeURL(token.href); }

@@ -160,7 +160,6 @@ def create_deployment_files():
         sync: false
       - key: JWT_SECRET_KEY
         sync: false
-      # Opt-in demo accounts (admin, recruiter1, candidate1); keep off in production
       - key: SEED_DEMO_USERS
         value: "0"
 """

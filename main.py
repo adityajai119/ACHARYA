@@ -79,7 +79,6 @@ async def extract_text_from_pdf(file_path: str) -> str:
         return ""
 
 def safe_upload_path(filename: str) -> str:
-    # Keep only the base name of the client's file name, UUID-prefixed, inside UPLOAD_DIR
     name = os.path.basename((filename or "").replace("\\", "/"))
     if not name or name.startswith(".") or ".." in name or any(c in name for c in ("/", "\\", "\x00")):
         raise HTTPException(status_code=400, detail="Invalid file name")
@@ -98,7 +97,6 @@ async def lifespan(app: FastAPI):
         logger.info("Connected to MongoDB successfully")
         
         # Initialize default data if collections are empty
-        # Demo accounts are opt-in; passwords come from DEMO_<ROLE>_PASSWORD or are generated
         if SEED_DEMO_USERS and await db.users.count_documents({}) == 0:
             default_users = [
                 {"username": "admin", "role": "Admin", "skills": "", "experience": "", "education": "", "projects": ""},
@@ -625,7 +623,6 @@ async def register(user: UserIn, token: Optional[str] = Depends(optional_oauth2_
         if user.role not in ['Admin', 'Recruiter', 'Candidate']:
             raise HTTPException(status_code=400, detail="Invalid role")
         
-        # Public sign-up is for Candidate and Recruiter; Admin accounts need an existing admin's token
         if user.role == 'Admin' and (not token or (await get_current_user(token))['role'] != 'Admin'):
             raise HTTPException(status_code=403, detail="Admin accounts can only be created by an admin")
         
@@ -1640,7 +1637,6 @@ async def recruiter_get_company_test_results(candidate: str, user=Depends(recrui
 @app.get("/download/{file_path:path}")
 async def download_file(file_path: str, user=Depends(get_current_user)):
     try:
-        # Only uploads/<name>: no "..", absolute paths, backslashes or NUL bytes
         if ".." in file_path.split("/") or "\\" in file_path or "\x00" in file_path or file_path.startswith("/") or os.path.isabs(file_path):
             raise HTTPException(status_code=400, detail="Invalid file path")
         uploads_dir = Path(UPLOAD_DIR).resolve()
@@ -1648,7 +1644,6 @@ async def download_file(file_path: str, user=Depends(get_current_user)):
         if not target.is_relative_to(uploads_dir):
             raise HTTPException(status_code=403, detail="Access denied")
         
-        # Uploads are application resumes: the candidate who uploaded one, recruiters and admins may download it
         application = await db.applications.find_one({"resume_path": os.path.join(UPLOAD_DIR, *target.relative_to(uploads_dir).parts)})
         if not application:
             raise HTTPException(status_code=404, detail="File not found")

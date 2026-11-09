@@ -198,7 +198,7 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => {
             if (response.ok) {
-                // Token is valid, redirect to dashboard (encoded so a stored role can't become a javascript: URL)
+                // Token is valid, redirect to dashboard
                 const page = encodeURIComponent(role.toLowerCase());
                 window.location.href = `${page}/${page}_dashboard.html`;
             } else {
