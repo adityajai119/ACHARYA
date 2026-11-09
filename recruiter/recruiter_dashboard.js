@@ -417,12 +417,12 @@ function displayCompanyTestResults(tests) {
         
         detailsHTML += `
             <div class="test-result" style="margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
-                <h4>${test.companyName} - ${test.testType}</h4>
-                <p><strong>Score:</strong> <span class="score-${scoreClass}">${score}%</span></p>
-                <p><strong>Duration:</strong> ${test.duration} minutes</p>
-                <p><strong>Status:</strong> ${test.status}</p>
+                <h4>${escapeHTML(test.companyName)} - ${escapeHTML(test.testType)}</h4>
+                <p><strong>Score:</strong> <span class="score-${scoreClass}">${escapeHTML(score)}%</span></p>
+                <p><strong>Duration:</strong> ${escapeHTML(test.duration)} minutes</p>
+                <p><strong>Status:</strong> ${escapeHTML(test.status)}</p>
                 <p><strong>Submitted:</strong> ${new Date(test.submittedAt).toLocaleString()}</p>
-                ${test.evaluation ? `<p><strong>Evaluation:</strong> ${test.evaluation}</p>` : ''}
+                ${test.evaluation ? `<p><strong>Evaluation:</strong> ${escapeHTML(test.evaluation)}</p>` : ''}
             </div>
         `;
     });

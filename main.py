@@ -172,7 +172,7 @@ for folder in ("admin", "candidate", "recruiter"):
 
 @app.get("/static/{filename}", include_in_schema=False)
 async def frontend_root_file(filename: str):
-    if filename not in ("index.html", "styles.css", "script.js"):
+    if filename not in ("index.html", "styles.css", "script.js", "escape.js"):
         raise HTTPException(status_code=404, detail="Not Found")
     return FileResponse(filename)
 

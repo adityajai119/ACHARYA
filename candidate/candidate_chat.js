@@ -147,10 +147,10 @@ const updateChatMessages = (messages) => {
         return `
             <li class="message-item ${isOwnMessage ? 'own-message' : ''}">
                 <div class="message-header">
-                    <span class="message-sender">${msg.sender}</span>
+                    <span class="message-sender">${escapeHTML(msg.sender)}</span>
                     <span class="message-time">${messageTime}</span>
                 </div>
-                <div class="message-content">${msg.message}</div>
+                <div class="message-content">${escapeHTML(msg.message)}</div>
             </li>
         `;
     }).join('');
@@ -315,7 +315,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
-        <span>${message}</span>
+        <span>${escapeHTML(message)}</span>
         <button class="notification-close">×</button>
     `;
 

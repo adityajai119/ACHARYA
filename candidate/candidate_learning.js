@@ -68,7 +68,7 @@ let goals = JSON.parse(localStorage.getItem('learningGoals')) || [];
 const updateGoalsList = () => {
     const listContainer = document.querySelector('#goalsList ul');
     if (!listContainer) return;
-    listContainer.innerHTML = goals.map(goal => `<li>${goal}</li>`).join('');
+    listContainer.innerHTML = goals.map(goal => `<li>${escapeHTML(goal)}</li>`).join('');
     localStorage.setItem('learningGoals', JSON.stringify(goals));
 };
 const learningGoalForm = document.getElementById('learningGoalForm');
@@ -102,7 +102,7 @@ function renderChatSessions() {
     }
     // List chat titles as clickable items
     chatSessionsDiv.innerHTML = chatSessions.map((session, idx) =>
-        `<span class="chat-session-title${activeSessionIdx === idx ? ' active-session-title' : ''}" data-session-idx="${idx}">${session.title}</span>`
+        `<span class="chat-session-title${activeSessionIdx === idx ? ' active-session-title' : ''}" data-session-idx="${idx}">${escapeHTML(session.title)}</span>`
     ).join(' ');
     // Show active chat conversation
     renderActiveChat();
@@ -121,9 +121,10 @@ function renderActiveChat() {
         return;
     }
     const session = chatSessions[activeSessionIdx];
+    // msg.ai is HTML built in this file: sanitised marked output or an error message with escaped text
     activeChatDiv.innerHTML = session.messages.map(msg =>
         `<div class="chat-block">
-            <div class="user-question"><b>You:</b> ${msg.user}</div>
+            <div class="user-question"><b>You:</b> ${escapeHTML(msg.user)}</div>
             <div class="ai-answer"><b>Acharya:</b> ${msg.ai}</div>
         </div>`
     ).join('');
@@ -141,6 +142,12 @@ const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-
 const aiForm = document.getElementById('aiQueryForm');
 const aiResponseContainer = document.getElementById('aiResponseContainer');
 const loader = document.getElementById('loader');
+
+// Model output is untrusted: show raw HTML in it as text and keep only safe link targets
+window.marked?.use({
+    renderer: { html(token) { return escapeHTML(typeof token === 'string' ? token : token.text); } },
+    walkTokens(token) { if (token.type === 'link' || token.type === 'image') token.href = safeURL(token.href); }
+});
 
 aiForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -217,7 +224,7 @@ aiForm.addEventListener('submit', async (e) => {
     } catch (err) {
         chatSessions[sessionIdx].messages.push({
             user: query,
-            ai: `<span style="color:#ff6f61">Error: ${err.message}</span>`
+            ai: `<span style="color:#ff6f61">Error: ${escapeHTML(err.message)}</span>`
         });
         saveChatSessions();
         renderChatSessions();

@@ -97,17 +97,17 @@ const updateResourcesList = (filteredResources) => {
     resourcesListUl.innerHTML = filteredResources.map(resource => `
         <li class="resource-item">
             <div class="resource-info">
-                <div class="resource-title">${resource.title}</div>
-                <div class="resource-category">${resource.category}</div>
+                <div class="resource-title">${escapeHTML(resource.title)}</div>
+                <div class="resource-category">${escapeHTML(resource.category)}</div>
                 <div class="resource-description" style="color: rgba(255, 255, 255, 0.7); font-size: 0.85rem; margin-top: 5px;">
-                    ${resource.description}
+                    ${escapeHTML(resource.description)}
                 </div>
                 <div class="resource-meta" style="margin-top: 8px; display: flex; gap: 10px;">
-                    <span class="difficulty" style="background: rgba(102, 126, 234, 0.3); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">${resource.difficulty || 'All Levels'}</span>
-                    <span class="type" style="background: rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">${resource.type || 'Resource'}</span>
+                    <span class="difficulty" style="background: rgba(102, 126, 234, 0.3); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">${escapeHTML(resource.difficulty || 'All Levels')}</span>
+                    <span class="type" style="background: rgba(34, 197, 94, 0.3); padding: 2px 8px; border-radius: 12px; font-size: 0.75rem;">${escapeHTML(resource.type || 'Resource')}</span>
                 </div>
             </div>
-            <a href="${resource.link}" target="_blank" class="resource-link">
+            <a href="${escapeHTML(safeURL(resource.link))}" target="_blank" class="resource-link">
                 Access Resource
             </a>
         </li>
@@ -243,7 +243,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
-        <span>${message}</span>
+        <span>${escapeHTML(message)}</span>
         <button class="notification-close">×</button>
     `;
 

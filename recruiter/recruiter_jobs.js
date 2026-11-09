@@ -149,21 +149,21 @@ const updateJobList = (jobs) => {
         return `
             <li class="job-item">
                 <div class="job-info">
-                    <div class="job-title">${job.title}</div>
+                    <div class="job-title">${escapeHTML(job.title)}</div>
                     <div class="job-details">
-                        🏢 ${job.company} • 📍 ${job.location}
-                        ${job.salary ? `• 💰 ${job.salary}` : ''}
-                        <span class="job-type-badge ${jobTypeClass}">
-                            ${jobTypeEmoji} ${job.type || 'Full-time'}
+                        🏢 ${escapeHTML(job.company)} • 📍 ${escapeHTML(job.location)}
+                        ${job.salary ? `• 💰 ${escapeHTML(job.salary)}` : ''}
+                        <span class="job-type-badge ${escapeHTML(jobTypeClass)}">
+                            ${jobTypeEmoji} ${escapeHTML(job.type || 'Full-time')}
                         </span>
                     </div>
-                    ${job.description ? `<div style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 8px;">📄 ${job.description.substring(0, 100)}${job.description.length > 100 ? '...' : ''}</div>` : ''}
+                    ${job.description ? `<div style="color: rgba(255,255,255,0.7); font-size: 0.9rem; margin-top: 8px;">📄 ${escapeHTML(job.description.substring(0, 100))}${job.description.length > 100 ? '...' : ''}</div>` : ''}
                 </div>
                 <div class="job-actions">
-                    <button onclick="editJob('${job._id}', '${job.title}', '${job.company}', '${job.location}', '${job.description || ''}', '${job.salary || ''}', '${job.type || 'Full-time'}')" class="edit-btn">
+                    <button onclick="editJob(${jsArg(job._id)}, ${jsArg(job.title)}, ${jsArg(job.company)}, ${jsArg(job.location)}, ${jsArg(job.description || '')}, ${jsArg(job.salary || '')}, ${jsArg(job.type || 'Full-time')})" class="edit-btn">
                         ✏️ Edit
                     </button>
-                    <button onclick="deleteJob('${job._id}')" class="delete-btn">
+                    <button onclick="deleteJob(${jsArg(job._id)})" class="delete-btn">
                         🗑️ Delete
                     </button>
                 </div>

@@ -137,7 +137,7 @@ if (analyzerForm) {
                 <div class="error-message">
                     <h3>❌ Analysis Failed</h3>
                     <p>An error occurred during analysis. Please try again.</p>
-                    <p class="error-details">${error.message}</p>
+                    <p class="error-details">${escapeHTML(error.message)}</p>
                 </div>
             `;
             showNotification('Analysis failed. Please try again.', 'error');
@@ -174,7 +174,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
-        <span>${message}</span>
+        <span>${escapeHTML(message)}</span>
         <button class="notification-close">×</button>
     `;
 
@@ -304,25 +304,25 @@ function displayAnalysis(data) {
                 color: white;
                 box-shadow: 0 10px 30px ${matchColor}40;
             ">
-                ${suitabilityScore}%
+                ${escapeHTML(suitabilityScore)}%
             </div>
             <p style="color: ${matchColor}; font-weight: 600; margin: 0;">Suitability Score</p>
         </div>
 
         <h3 class="summary">📊 Capability Analysis</h3>
-        <p>${data.capabilityAnalysis ?? 'No analysis provided.'}</p>
+        <p>${escapeHTML(data.capabilityAnalysis ?? 'No analysis provided.')}</p>
 
         <h3 class="strengths">✅ Key Strengths</h3>
-        <ul>${(data.strengths ?? []).map(item => `<li>${item}</li>`).join('')}</ul>
+        <ul>${(data.strengths ?? []).map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
 
         <h3 class="weaknesses">⚠️ Areas for Improvement</h3>
-        <ul>${(data.weaknesses ?? []).map(item => `<li>${item}</li>`).join('')}</ul>
+        <ul>${(data.weaknesses ?? []).map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
 
         <h3 class="missing-skills">❌ Missing Skills</h3>
-        <ul>${(data.missingSkills ?? []).map(item => `<li>${item}</li>`).join('')}</ul>
+        <ul>${(data.missingSkills ?? []).map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
 
         <h3 class="recommendations">💡 Recommendations</h3>
-        <ul>${(data.recommendations ?? []).map(item => `<li>${item}</li>`).join('')}</ul>
+        <ul>${(data.recommendations ?? []).map(item => `<li>${escapeHTML(item)}</li>`).join('')}</ul>
 
         <h3 class="resume-text">📄 Resume Text Preview</h3>
         <div style="
@@ -338,7 +338,7 @@ function displayAnalysis(data) {
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
         ">
-            ${data.resumeText ?? 'No resume text available.'}
+            ${escapeHTML(data.resumeText ?? 'No resume text available.')}
         </div>
     `;
 }

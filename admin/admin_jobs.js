@@ -139,20 +139,20 @@ const updateJobList = (jobs) => {
         }[job.type] || '💼';
         
         return `
-            <li class="job-item" data-job-id="${job._id}">
+            <li class="job-item" data-job-id="${escapeHTML(job._id)}">
                 <div class="job-content">
                     <div class="job-header">
-                        <div class="job-title">${job.title}</div>
-                        <div class="job-type-badge ${jobTypeClass}">
-                            ${jobTypeEmoji} ${job.type || 'Full-time'}
+                        <div class="job-title">${escapeHTML(job.title)}</div>
+                        <div class="job-type-badge ${escapeHTML(jobTypeClass)}">
+                            ${jobTypeEmoji} ${escapeHTML(job.type || 'Full-time')}
                         </div>
                     </div>
                     <div class="job-details">
-                        <span class="job-company">🏢 ${job.company}</span>
-                        <span class="job-location">📍 ${job.location}</span>
-                        ${job.salary ? `<span class="job-salary">💰 ${job.salary}</span>` : ''}
+                        <span class="job-company">🏢 ${escapeHTML(job.company)}</span>
+                        <span class="job-location">📍 ${escapeHTML(job.location)}</span>
+                        ${job.salary ? `<span class="job-salary">💰 ${escapeHTML(job.salary)}</span>` : ''}
                     </div>
-                    <div class="job-id">ID: ${job._id}</div>
+                    <div class="job-id">ID: ${escapeHTML(job._id)}</div>
                 </div>
             </li>
         `;

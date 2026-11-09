@@ -492,7 +492,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
-        <span>${message}</span>
+        <span>${escapeHTML(message)}</span>
         <button class="notification-close">×</button>
     `;
 

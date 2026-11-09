@@ -131,7 +131,7 @@ const updateActivityList = (activities) => {
                 <div class="activity-content">
                     <div class="activity-icon">${activityIcon}</div>
                     <div class="activity-details">
-                        <div class="activity-description">${activity.description}</div>
+                        <div class="activity-description">${escapeHTML(activity.description)}</div>
                         <div class="activity-time">${timeAgo}</div>
                     </div>
                 </div>

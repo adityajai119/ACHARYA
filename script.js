@@ -117,7 +117,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             
             // Redirect based on role
             setTimeout(() => {
-                const role = data.role.toLowerCase();
+                const role = encodeURIComponent(data.role.toLowerCase());
                 window.location.href = `${role}/${role}_dashboard.html`;
             }, 1500);
         } else {
@@ -198,8 +198,9 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .then(response => {
             if (response.ok) {
-                // Token is valid, redirect to dashboard
-                window.location.href = `${role.toLowerCase()}/${role.toLowerCase()}_dashboard.html`;
+                // Token is valid, redirect to dashboard (encoded so a stored role can't become a javascript: URL)
+                const page = encodeURIComponent(role.toLowerCase());
+                window.location.href = `${page}/${page}_dashboard.html`;
             } else {
                 // Token is invalid, clear storage silently
                 localStorage.clear();

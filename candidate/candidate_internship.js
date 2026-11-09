@@ -106,21 +106,21 @@ function displayProjects(projectList) {
         projectsHTML += `
             <div class="project-item">
                 <div class="project-header">
-                    <div class="project-name">${project.name}</div>
-                    <span class="project-status ${statusClass}">${project.status}</span>
+                    <div class="project-name">${escapeHTML(project.name)}</div>
+                    <span class="project-status ${statusClass}">${escapeHTML(project.status)}</span>
                 </div>
                 <div class="project-details">
-                    <p><strong>📝 Description:</strong> ${project.description}</p>
-                    <p><strong>🛠️ Technologies:</strong> ${project.technologies}</p>
-                    <p><strong>👥 Contributors Needed:</strong> ${project.contributorsNeeded}</p>
-                    <p><strong>👤 Posted by:</strong> ${project.postedBy}</p>
+                    <p><strong>📝 Description:</strong> ${escapeHTML(project.description)}</p>
+                    <p><strong>🛠️ Technologies:</strong> ${escapeHTML(project.technologies)}</p>
+                    <p><strong>👥 Contributors Needed:</strong> ${escapeHTML(project.contributorsNeeded)}</p>
+                    <p><strong>👤 Posted by:</strong> ${escapeHTML(project.postedBy)}</p>
                     <p><strong>📅 Posted on:</strong> ${new Date(project.postedAt).toLocaleDateString()}</p>
                 </div>
                 <div class="project-actions">
-                    <button class="btn btn-primary" onclick="contactProjectOwner('${project.postedBy}', '${project.contactEmail}', '${project.contactPhone || ''}')">
+                    <button class="btn btn-primary" onclick="contactProjectOwner(${jsArg(project.postedBy)}, ${jsArg(project.contactEmail)}, ${jsArg(project.contactPhone || '')})">
                         📞 Contact Owner
                     </button>
-                    <button class="btn btn-success" onclick="joinProject('${project.name}', ${index})">
+                    <button class="btn btn-success" onclick="joinProject(${jsArg(project.name)}, ${index})">
                         🤝 Join Project
                     </button>
                 </div>
@@ -144,11 +144,11 @@ function contactProjectOwner(ownerName, email, phone) {
     let contactHTML = `
         <div class="contact-item">
             <div class="contact-label">👤 Project Owner</div>
-            <div class="contact-value">${ownerName}</div>
+            <div class="contact-value">${escapeHTML(ownerName)}</div>
         </div>
         <div class="contact-item">
             <div class="contact-label">📧 Email</div>
-            <div class="contact-value">${email}</div>
+            <div class="contact-value">${escapeHTML(email)}</div>
         </div>
     `;
     
@@ -156,7 +156,7 @@ function contactProjectOwner(ownerName, email, phone) {
         contactHTML += `
             <div class="contact-item">
                 <div class="contact-label">📱 Phone</div>
-                <div class="contact-value">${phone}</div>
+                <div class="contact-value">${escapeHTML(phone)}</div>
             </div>
         `;
     }

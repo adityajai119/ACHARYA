@@ -83,23 +83,23 @@ function displayAssignedTests(tests) {
         testsHTML += `
             <div class="assigned-test-item" style="background: rgba(255, 255, 255, 0.1); border-radius: 15px; padding: 20px; margin-bottom: 15px; border: 1px solid rgba(255, 255, 255, 0.2);">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                    <h3 style="margin: 0; color: #ffffff;">🏢 ${test.companyName}</h3>
+                    <h3 style="margin: 0; color: #ffffff;">🏢 ${escapeHTML(test.companyName)}</h3>
                     <span style="background: rgba(102, 126, 234, 0.3); padding: 5px 12px; border-radius: 20px; font-size: 0.9rem; color: #667eea;">
-                        ${test.testType}
+                        ${escapeHTML(test.testType)}
                     </span>
                 </div>
                 <div style="margin-bottom: 15px;">
                     <p style="margin: 5px 0; color: rgba(255, 255, 255, 0.8);">
-                        <strong>Duration:</strong> ${test.duration} minutes
+                        <strong>Duration:</strong> ${escapeHTML(test.duration)} minutes
                     </p>
                     <p style="margin: 5px 0; color: rgba(255, 255, 255, 0.8);">
                         <strong>Questions:</strong> ${test.questions.length} questions
                     </p>
                     <p style="margin: 5px 0; color: rgba(255, 255, 255, 0.8);">
-                        <strong>Assigned by:</strong> ${test.assignedBy}
+                        <strong>Assigned by:</strong> ${escapeHTML(test.assignedBy)}
                     </p>
                 </div>
-                <button onclick="startCompanyTest('${test._id}', '${test.companyName}', '${test.testType}')" 
+                <button onclick="startCompanyTest(${jsArg(test._id)}, ${jsArg(test.companyName)}, ${jsArg(test.testType)})" 
                         style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s ease;">
                     🚀 Start Test
                 </button>
@@ -143,7 +143,7 @@ function showCompanyTestInterface(testId, companyName, testType) {
     modal.innerHTML = `
         <div style="background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border-radius: 20px; padding: 30px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.2);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h2 style="color: #ffffff; margin: 0;">🏢 ${companyName} - ${testType}</h2>
+                <h2 style="color: #ffffff; margin: 0;">🏢 ${escapeHTML(companyName)} - ${escapeHTML(testType)}</h2>
                 <button onclick="this.parentElement.parentElement.parentElement.remove()" 
                         style="background: rgba(239, 68, 68, 0.8); color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer;">
                     ✕
@@ -153,7 +153,7 @@ function showCompanyTestInterface(testId, companyName, testType) {
                 <p style="color: rgba(255, 255, 255, 0.8);">Loading test questions...</p>
             </div>
             <div style="margin-top: 20px; text-align: center;">
-                <button onclick="submitCompanyTest('${testId}')" 
+                <button onclick="submitCompanyTest(${jsArg(testId)})" 
                         style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600;">
                     📤 Submit Test
                 </button>
@@ -230,7 +230,7 @@ function displayTestQuestions(test, modal) {
         questionsHTML += `
             <div style="margin-bottom: 20px; padding: 15px; background: rgba(255, 255, 255, 0.1); border-radius: 10px;">
                 <h4 style="color: #ffffff; margin-bottom: 10px;">Question ${index + 1}</h4>
-                <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 15px;">${question.question}</p>
+                <p style="color: rgba(255, 255, 255, 0.9); margin-bottom: 15px;">${escapeHTML(question.question)}</p>
                 <textarea 
                     id="answer_${index}" 
                     placeholder="Enter your answer here..."

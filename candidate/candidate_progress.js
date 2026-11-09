@@ -388,17 +388,17 @@ function updateProgressList() {
     noProgress.style.display = 'none';
     
     progressListUl.innerHTML = progressItems.map(item => `
-        <li class="progress-item" data-id="${item.id}">
+        <li class="progress-item" data-id="${escapeHTML(item.id)}">
             <div class="progress-content">
                 <div class="progress-header">
-                    <span class="progress-icon">${item.icon || '📈'}</span>
-                    <span class="progress-category">${item.category}</span>
+                    <span class="progress-icon">${escapeHTML(item.icon || '📈')}</span>
+                    <span class="progress-category">${escapeHTML(item.category)}</span>
                     ${item.autoTracked ? '<span class="auto-tracked-badge">Auto</span>' : ''}
                 </div>
-                <div class="progress-text">${item.item}</div>
+                <div class="progress-text">${escapeHTML(item.item)}</div>
                 <div class="progress-date">${formatDate(item.date)}</div>
             </div>
-            <button class="delete-progress-btn" onclick="deleteProgressItem(${item.id})">×</button>
+            <button class="delete-progress-btn" onclick="deleteProgressItem(${jsArg(item.id)})">×</button>
         </li>
     `).join('');
 }

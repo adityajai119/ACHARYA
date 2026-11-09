@@ -68,20 +68,20 @@ const updateJobList = (jobs) => {
         }[job.type] || '💼';
 
         return `
-            <li class="job-item" data-job-title="${job.title}" data-job-company="${job.company}" data-job-location="${job.location}">
+            <li class="job-item" data-job-title="${escapeHTML(job.title)}" data-job-company="${escapeHTML(job.company)}" data-job-location="${escapeHTML(job.location)}">
                 <div class="job-info">
-                    <div class="job-title">${job.title}</div>
+                    <div class="job-title">${escapeHTML(job.title)}</div>
                     <div class="job-details">
-                        <span class="job-company">🏢 ${job.company}</span> • 
-                        <span class="job-location">📍 ${job.location}</span>
-                        ${job.salary ? `• 💰 ${job.salary}` : ''}
-                        <span class="job-type-badge ${jobTypeClass}">
-                            ${jobTypeEmoji} ${job.type || 'Full-time'}
+                        <span class="job-company">🏢 ${escapeHTML(job.company)}</span> • 
+                        <span class="job-location">📍 ${escapeHTML(job.location)}</span>
+                        ${job.salary ? `• 💰 ${escapeHTML(job.salary)}` : ''}
+                        <span class="job-type-badge ${escapeHTML(jobTypeClass)}">
+                            ${jobTypeEmoji} ${escapeHTML(job.type || 'Full-time')}
                         </span>
                     </div>
                     ${job.description ? `
                         <div class="job-description">
-                            📄 ${job.description.substring(0, 150)}${job.description.length > 150 ? '...' : ''}
+                            📄 ${escapeHTML(job.description.substring(0, 150))}${job.description.length > 150 ? '...' : ''}
                         </div>
                     ` : ''}
                 </div>
@@ -267,7 +267,7 @@ function showNotification(message, type = 'info') {
     const notification = document.createElement('div');
     notification.className = `notification ${type}`;
     notification.innerHTML = `
-        <span>${message}</span>
+        <span>${escapeHTML(message)}</span>
         <button class="notification-close">×</button>
     `;
 

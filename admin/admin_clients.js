@@ -118,15 +118,15 @@ const updateClientList = (clients) => {
     
     list.innerHTML = clients.map(client => {
         return `
-            <li class="client-item" data-client-id="${client._id}">
+            <li class="client-item" data-client-id="${escapeHTML(client._id)}">
                 <div class="client-info">
                     <div class="client-details">
-                        <div class="client-name">${client.name}</div>
-                        <div class="client-contact">${client.contact}</div>
+                        <div class="client-name">${escapeHTML(client.name)}</div>
+                        <div class="client-contact">${escapeHTML(client.contact)}</div>
                     </div>
                     <div class="client-actions">
-                        <button class="btn btn-primary btn-sm" onclick="editClient('${client._id}')">✏️ Edit</button>
-                        <button class="btn btn-danger btn-sm" onclick="deleteClient('${client._id}')">🗑️ Delete</button>
+                        <button class="btn btn-primary btn-sm" onclick="editClient(${jsArg(client._id)})">✏️ Edit</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteClient(${jsArg(client._id)})">🗑️ Delete</button>
                     </div>
                 </div>
             </li>

@@ -108,13 +108,13 @@ const updateApplicationList = (applications) => {
             <li class="application-item">
                 <div class="application-info">
                     <div class="application-header">
-                        <strong>👤 ${app.candidate}</strong> applied for 
-                        <strong>💼 ${app.job}</strong>
+                        <strong>👤 ${escapeHTML(app.candidate)}</strong> applied for 
+                        <strong>💼 ${escapeHTML(app.job)}</strong>
                     </div>
                     <div class="application-details">
                         <div class="detail-row">
-                            <span class="status-badge ${statusClass}">
-                                ${statusEmoji} ${app.status}
+                            <span class="status-badge ${escapeHTML(statusClass)}">
+                                ${statusEmoji} ${escapeHTML(app.status)}
                                 ${app.status === 'Accepted' || app.status === 'Rejected' ? 
                                     `<span style="margin-left: 8px; font-size: 0.8rem; opacity: 0.9;">${app.status} ${app.feedback && app.feedback.includes('Grade:') ? app.feedback.match(/Grade: (\d+)\/5/)?.[1] || 'N/A' : 'N/A'}</span>` : 
                                     ''
@@ -123,18 +123,18 @@ const updateApplicationList = (applications) => {
                             <span class="timestamp">📅 ${timestamp}</span>
                         </div>
                         <div class="detail-row">
-                            <span class="resume-file">📄 ${resumeFile}</span>
+                            <span class="resume-file">📄 ${escapeHTML(resumeFile)}</span>
                         </div>
                         ${app.feedback ? `
                             <div class="feedback-section">
                                 <span class="feedback-label">🤖 AISA Algorithm Analysis:</span>
-                                <span class="feedback-text">${app.feedback.replace(/Grade: \d+\/5 - /, '').replace(/AI Algorithm Breakdown:/, '<br><strong>AISA Algorithm Breakdown:</strong>')}</span>
+                                <span class="feedback-text">${escapeHTML(app.feedback).replace(/Grade: \d+\/5 - /, '').replace(/AI Algorithm Breakdown:/, '<br><strong>AISA Algorithm Breakdown:</strong>')}</span>
                             </div>
                         ` : ''}
                     </div>
                 </div>
                 <div class="application-actions">
-                    <button onclick="screenApplication('${app._id}', '${app.candidate}', '${app.job}', '', '${app.resume_file || ''}')" class="screen-btn">
+                    <button onclick="screenApplication(${jsArg(app._id)}, ${jsArg(app.candidate)}, ${jsArg(app.job)}, '', ${jsArg(app.resume_file || '')})" class="screen-btn">
                         🔍 Screen Application
                     </button>
                 </div>
