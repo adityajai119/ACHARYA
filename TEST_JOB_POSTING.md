@@ -6,7 +6,7 @@
 1. Go to `http://localhost:8000/static/index.html`
 2. Login with:
    - Username: `recruiter1`
-   - Password: `recruiter123`
+   - Password: `DEMO_RECRUITER_PASSWORD`, or the one printed in the server log on first start with `SEED_DEMO_USERS=1`
 3. You should be redirected to the recruiter dashboard
 
 ### **Step 2: Post a Job**
@@ -31,7 +31,7 @@
 2. Go to `http://localhost:8000/static/index.html`
 3. Login with:
    - Username: `candidate1`
-   - Password: `candidate123`
+   - Password: `DEMO_CANDIDATE_PASSWORD`, or the one printed in the server log on first start with `SEED_DEMO_USERS=1`
 4. Go to `http://localhost:8000/static/candidate/candidate_apply.html`
 5. The job should appear in the "Available Jobs" list
 6. Click on the job to select it

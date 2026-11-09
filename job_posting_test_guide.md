@@ -13,7 +13,7 @@ This guide will help you test the complete job posting and application system, e
 1. Go to `http://localhost:8000/static/index.html`
 2. Login with:
    - Username: `recruiter1`
-   - Password: `recruiter123`
+   - Password: `DEMO_RECRUITER_PASSWORD`, or the one printed in the server log on first start with `SEED_DEMO_USERS=1`
 3. Verify you're redirected to the recruiter dashboard
 
 ### 2. Post a Job
@@ -33,7 +33,7 @@ This guide will help you test the complete job posting and application system, e
 2. Go to `http://localhost:8000/static/index.html`
 3. Login with:
    - Username: `candidate1`
-   - Password: `candidate123`
+   - Password: `DEMO_CANDIDATE_PASSWORD`, or the one printed in the server log on first start with `SEED_DEMO_USERS=1`
 4. Verify you're redirected to the candidate dashboard
 
 ### 4. Apply for the Job

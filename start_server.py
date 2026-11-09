@@ -4,6 +4,7 @@ Startup script for the Acharya Job Portal
 """
 import os
 import sys
+import secrets
 import subprocess
 import time
 from pathlib import Path
@@ -29,11 +30,11 @@ def create_env_file():
     """Create .env file if it doesn't exist"""
     env_file = Path(".env")
     if not env_file.exists():
-        env_content = """# MongoDB Configuration
-MONGODB_URI=mongodb://localhost:27017/acharya
+        env_content = f"""# MongoDB Configuration
+MONGODB_URL=mongodb://localhost:27017/acharya
 
-# JWT Configuration
-JWT_SECRET=your_super_secret_jwt_key_change_in_production_please
+# JWT Configuration (random value generated for this machine)
+JWT_SECRET_KEY={secrets.token_hex(32)}
 
 # Server Configuration
 HOST=0.0.0.0

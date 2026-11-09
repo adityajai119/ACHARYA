@@ -20,7 +20,7 @@ The error shows the browser is trying to connect to `localhost:3000` instead of 
 1. Go to `http://localhost:8000/static/index.html`
 2. Login with:
    - Username: `recruiter1`
-   - Password: `recruiter123`
+   - Password: `DEMO_RECRUITER_PASSWORD`, or the one printed in the server log on first start with `SEED_DEMO_USERS=1`
 3. Make sure you're redirected to recruiter dashboard
 
 #### **3. Check Browser Console**

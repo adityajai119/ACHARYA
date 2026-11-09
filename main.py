@@ -15,6 +15,7 @@ from bson import ObjectId
 from dotenv import load_dotenv
 import asyncio
 import bcrypt
+import secrets
 from uuid import uuid4
 import shutil
 from pdfminer.high_level import extract_text
@@ -24,8 +25,10 @@ import urllib.parse
 # ---------- CONFIGURATION ----------
 
 load_dotenv()
-MONGODB_URI = os.environ.get("MONGODB_URI", "mongodb://localhost:27017/acharya")
-JWT_SECRET = os.environ.get("JWT_SECRET", "your_jwt_secret_key_change_in_production")
+# Documented names first; MONGODB_URI and JWT_SECRET are the legacy names, kept for existing deployments
+MONGODB_URI = os.environ.get("MONGODB_URL") or os.environ.get("MONGODB_URI")
+JWT_SECRET = os.environ.get("JWT_SECRET_KEY") or os.environ.get("JWT_SECRET")
+SEED_DEMO_USERS = os.environ.get("SEED_DEMO_USERS", "").lower() in ("1", "true", "yes")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 UPLOAD_DIR = "uploads"
@@ -42,6 +45,13 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger(__name__)
+
+if not MONGODB_URI:
+    MONGODB_URI = "mongodb://localhost:27017/acharya"
+    logger.warning("MONGODB_URL is not set: using the local development database on localhost. Set MONGODB_URL in production.")
+if not JWT_SECRET:
+    JWT_SECRET = secrets.token_hex(32)
+    logger.warning("JWT_SECRET_KEY is not set: using a random secret for this process, so logins will not survive a restart. Set JWT_SECRET_KEY in production.")
 
 # ---------- DATABASE ----------
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGODB_URI)
@@ -78,14 +88,25 @@ async def lifespan(app: FastAPI):
         logger.info("Connected to MongoDB successfully")
         
         # Initialize default data if collections are empty
-        if await db.users.count_documents({}) == 0:
+        # Demo accounts are opt-in; passwords come from DEMO_<ROLE>_PASSWORD or are generated
+        if SEED_DEMO_USERS and await db.users.count_documents({}) == 0:
             default_users = [
-                {"username": "admin", "password": get_password_hash("admin123"), "role": "Admin", "skills": "", "experience": "", "education": "", "projects": ""},
-                {"username": "recruiter1", "password": get_password_hash("recruiter123"), "role": "Recruiter", "skills": "", "experience": "", "education": "", "projects": ""},
-                {"username": "candidate1", "password": get_password_hash("candidate123"), "role": "Candidate", "skills": "Python, JavaScript", "experience": "2 years", "education": "B.Tech", "projects": "Web Development"}
+                {"username": "admin", "role": "Admin", "skills": "", "experience": "", "education": "", "projects": ""},
+                {"username": "recruiter1", "role": "Recruiter", "skills": "", "experience": "", "education": "", "projects": ""},
+                {"username": "candidate1", "role": "Candidate", "skills": "Python, JavaScript", "experience": "2 years", "education": "B.Tech", "projects": "Web Development"}
             ]
+            generated = []
+            for user in default_users:
+                password = os.environ.get(f"DEMO_{user['role'].upper()}_PASSWORD")
+                if not password:
+                    password = secrets.token_urlsafe(12)
+                    generated.append((user["username"], password))
+                user["password"] = get_password_hash(password)
             await db.users.insert_many(default_users)
-            logger.info("Inserted default users")
+            logger.info("Inserted demo users")
+            for username, password in generated:
+                # print, not logger: keeps generated passwords out of combined.log / error.log
+                print(f"Demo user '{username}' password (shown once): {password}", flush=True)
             
         if await db.jobs.count_documents({}) == 0:
             default_jobs = [
@@ -135,8 +156,15 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Serve static files (for frontend)
-app.mount("/static", StaticFiles(directory="."), name="static")
+# Serve only the frontend, never the project root (source, .env, logs, uploads)
+for folder in ("admin", "candidate", "recruiter"):
+    app.mount(f"/static/{folder}", StaticFiles(directory=folder), name=f"static_{folder}")
+
+@app.get("/static/{filename}", include_in_schema=False)
+async def frontend_root_file(filename: str):
+    if filename not in ("index.html", "styles.css", "script.js"):
+        raise HTTPException(status_code=404, detail="Not Found")
+    return FileResponse(filename)
 
 # ---------- MODELS ----------
 

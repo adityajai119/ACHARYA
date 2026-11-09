@@ -66,6 +66,9 @@ services:
         sync: false
       - key: JWT_SECRET_KEY
         sync: false
+      # Opt-in demo accounts (admin, recruiter1, candidate1); keep off in production
+      - key: SEED_DEMO_USERS
+        value: "0"
 ```
 
 #### Step 2: Deploy to Render
@@ -152,6 +155,19 @@ JWT_SECRET_KEY=your_super_secret_jwt_key_here
 HOST=0.0.0.0
 PORT=8000
 ```
+
+The old names `MONGODB_URI` and `JWT_SECRET` are still read as fallbacks. Without `MONGODB_URL` the app uses a local development database (`mongodb://localhost:27017/acharya`). Without `JWT_SECRET_KEY` it generates a random secret at every start: tokens stay unforgeable, but users are logged out on each restart or deploy. Always set both in production.
+
+### Optional: Demo Accounts
+Off by default. On an empty database, `SEED_DEMO_USERS=1` creates `admin`, `recruiter1` and `candidate1`:
+```env
+SEED_DEMO_USERS=1
+# If empty, a random password is generated and printed once to the server log
+DEMO_ADMIN_PASSWORD=
+DEMO_RECRUITER_PASSWORD=
+DEMO_CANDIDATE_PASSWORD=
+```
+Keep `SEED_DEMO_USERS` off in production.
 
 ### How to Get These Values
 
