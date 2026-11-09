@@ -78,6 +78,16 @@ async def extract_text_from_pdf(file_path: str) -> str:
         logger.error(f"Error extracting text from PDF: {e}")
         return ""
 
+def safe_upload_path(filename: str) -> str:
+    # Keep only the base name of the client's file name, UUID-prefixed, inside UPLOAD_DIR
+    name = os.path.basename((filename or "").replace("\\", "/"))
+    if not name or name.startswith(".") or ".." in name or any(c in name for c in ("/", "\\", "\x00")):
+        raise HTTPException(status_code=400, detail="Invalid file name")
+    file_path = os.path.join(UPLOAD_DIR, f"{uuid4()}_{name}")
+    if not Path(file_path).resolve().is_relative_to(Path(UPLOAD_DIR).resolve()):
+        raise HTTPException(status_code=400, detail="Invalid file name")
+    return file_path
+
 # ---------- LIFESPAN EVENT ----------
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -950,7 +960,7 @@ async def submit_application(
             raise HTTPException(status_code=400, detail="File size must be less than 5MB")
         
         # Save uploaded file
-        file_path = os.path.join(UPLOAD_DIR, f"{uuid4()}_{resume.filename}")
+        file_path = safe_upload_path(resume.filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(resume.file, buffer)
         
@@ -1035,7 +1045,7 @@ async def candidate_analyze_resume(
             raise HTTPException(status_code=400, detail="Only PDF files are allowed")
         
         # Save uploaded file
-        file_path = os.path.join(UPLOAD_DIR, f"{uuid4()}_{resume.filename}")
+        file_path = safe_upload_path(resume.filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(resume.file, buffer)
         
@@ -1168,7 +1178,7 @@ async def recruiter_analyze_resume(
 ):
     try:
         # Save uploaded file
-        file_path = os.path.join(UPLOAD_DIR, f"{uuid4()}_{resume.filename}")
+        file_path = safe_upload_path(resume.filename)
         with open(file_path, "wb") as buffer:
             shutil.copyfileobj(resume.file, buffer)
         
@@ -1199,6 +1209,8 @@ async def recruiter_analyze_resume(
         
         return {"success": True, "analysis": analysis}
         
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Error in resume analysis: {e}")
         raise HTTPException(status_code=500, detail="Failed to analyze resume")
