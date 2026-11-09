@@ -135,7 +135,7 @@ function saveChatSessions() {
 
 // ---------------- AI Teacher Logic ----------------
 // For production, use a backend endpoint. Do NOT expose this key in the frontend.
-const API_KEY = 'AIzaSyABRB6EWU_5E5TzTB9Scaz_sh-jzGeVnP0'; // Your Gemini API Key
+const API_KEY = (window.ACHARYA_CONFIG && window.ACHARYA_CONFIG.GEMINI_API_KEY) || ''; // Gemini API key supplied at runtime; never commit it
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${API_KEY}`;
 
 const aiForm = document.getElementById('aiQueryForm');

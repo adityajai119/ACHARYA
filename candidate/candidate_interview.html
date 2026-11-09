@@ -368,7 +368,7 @@
     </div>
 
     <script>
-        const API_KEY = 'AIzaSyBDIzRw9eaTmfFkihHNRfLG7LkPTz6h4Vs';
+        const API_KEY = (window.ACHARYA_CONFIG && window.ACHARYA_CONFIG.GEMINI_API_KEY) || '';
         const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${API_KEY}`;
 
         const hrQuestions = [

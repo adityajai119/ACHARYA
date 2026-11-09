@@ -300,7 +300,7 @@ def candidate_required(user=Depends(get_current_user)):
 import google.generativeai as genai
 
 # Configure Gemini AI
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY", "AIzaSyCEfBjtgmX3YCBoMUbnIacHXo6BbsIVMX0")
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
 genai.configure(api_key=GEMINI_API_KEY)
 
 async def analyze_resume_with_ai(resume_text: str, job_description: str):

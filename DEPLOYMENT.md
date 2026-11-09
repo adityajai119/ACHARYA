@@ -38,7 +38,7 @@ In your Railway project dashboard:
 2. Add the following environment variables:
 
 ```env
-MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/acharya
+MONGODB_URL=<your-mongodb-uri>
 GEMINI_API_KEY=your_gemini_api_key_here
 JWT_SECRET_KEY=your_super_secret_jwt_key_here
 ```
@@ -61,11 +61,11 @@ services:
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: MONGODB_URL
-        value: mongodb+srv://username:password@cluster.mongodb.net/acharya
+        sync: false
       - key: GEMINI_API_KEY
-        value: your_gemini_api_key_here
+        sync: false
       - key: JWT_SECRET_KEY
-        value: your_super_secret_jwt_key_here
+        sync: false
 ```
 
 #### Step 2: Deploy to Render
@@ -140,7 +140,7 @@ git push heroku main
 ### Required Variables
 ```env
 # Database
-MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/acharya
+MONGODB_URL=<your-mongodb-uri>
 
 # AI Services
 GEMINI_API_KEY=your_gemini_api_key_here

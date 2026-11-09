@@ -59,7 +59,7 @@ def check_environment_variables():
         print("\n📝 Please set the following environment variables:")
         for var in missing_vars:
             if var == 'MONGODB_URL':
-                print(f"   {var}=mongodb+srv://username:password@cluster.mongodb.net/acharya")
+                print(f"   {var}=<your-mongodb-uri>")
             elif var == 'GEMINI_API_KEY':
                 print(f"   {var}=your_gemini_api_key_here")
             elif var == 'JWT_SECRET_KEY':
@@ -155,11 +155,11 @@ def create_deployment_files():
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: MONGODB_URL
-        value: mongodb+srv://username:password@cluster.mongodb.net/acharya
+        sync: false
       - key: GEMINI_API_KEY
-        value: your_gemini_api_key_here
+        sync: false
       - key: JWT_SECRET_KEY
-        value: your_super_secret_jwt_key_here
+        sync: false
 """
     
     with open("render.yaml", "w") as f:
